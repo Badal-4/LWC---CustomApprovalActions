@@ -1,0 +1,31 @@
+<template>
+   <!-- <template if:true={leaveRecords}>
+    <template for:each={leaveRecords} for:item="leave">
+        {leave.Name}
+    </template>
+    </template>-->
+    <table   class="slds-table  slds-table_bordered ">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th  class="slds-size_1-of-6 " scope="col">
+                    <div class="slds-truncate "><h6>Leave Name</h6></div>
+                </th>
+                <th  class="slds-size_1-of-6 " scope="col">
+                    <div class="slds-truncate "><h6>Status</h6></div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={leaveRecords} for:item="leave">
+               <tr key={leave.Id}>
+                   <td>{leave.Name}</td>
+                   <td>{leave.Status__c}</td>
+                   <td>
+                   <button class="slds-button slds-button--success"  name={leave.Id} onclick={approveAction} >Approve</button>
+                   <button class="slds-button slds-button--destructive" name={leave.Id} onclick={rejectAction} >Reject</button>
+                   </td>
+               </tr>
+            </template>
+        </tbody>
+    </table>
+</template>
