@@ -1,0 +1,47 @@
+public class approvalClass 
+{
+  @auraEnabled(cacheable=true)
+    public static List<Leave__c> getRecords()
+    {
+        return [Select Id,Name,Status__c from Leave__c];
+    }
+    
+    @AuraEnabled
+    public static void acceptMethod(String rcdId)
+    {
+         String recordId =rcdId;
+        List<ProcessInstanceWorkitem> workItems = [SELECT Id, ProcessInstanceId FROM ProcessInstanceWorkitem 
+                                                   WHERE ProcessInstance.TargetObjectId = :recordId ];
+        
+        List<Approval.ProcessWorkitemRequest> requests = new List<Approval.ProcessWorkitemRequest>();
+        
+        for(ProcessInstanceWorkitem workItem : workItems){
+             Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+             req.setWorkitemId(workItem.Id);
+             req.setAction('Approve');
+             req.setComments('Your Comment.');
+             requests.add(req);
+             } 
+        
+            Approval.ProcessResult[] processResults = Approval.process(requests);
+}
+    
+    @auraEnabled
+      public static void rejectMethod(String rcdId)
+    {
+         String recordId =rcdId;
+        List<ProcessInstanceWorkitem> workItems = [SELECT Id, ProcessInstanceId FROM ProcessInstanceWorkitem 
+                                                   WHERE ProcessInstance.TargetObjectId = :recordId ];
+        List<Approval.ProcessWorkitemRequest> requests = new List<Approval.ProcessWorkitemRequest>();
+        for(ProcessInstanceWorkitem workItem : workItems){
+             Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+             req.setWorkitemId(workItem.Id);
+  //Valid values are: Approve, Reject, or Removed. 
+  //Only system administrators can specify Removed.
+             req.setAction('Reject');
+             req.setComments('Your Comment.');
+             requests.add(req);
+             } 
+            Approval.ProcessResult[] processResults = Approval.process(requests);
+}
+}
